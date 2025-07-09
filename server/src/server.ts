@@ -7,20 +7,23 @@ let server: Server;
 
 async function main() {
   try {
-    await mongoose.connect(config.database_url as string);
+    await mongoose.connect(config.database_url as string, {
+      ssl: true,
+      retryWrites: true,
+    } as mongoose.ConnectOptions);
 
     server = app.listen(config.port, () => {
-      console.log(`app is listening on port ${config.port}`);
+      console.log(`✅ App is listening on port ${config.port}`);
     });
   } catch (err) {
-    console.log(err);
+    console.log(`❌ Error connecting to MongoDB:`, err);
   }
 }
 
 main();
 
 process.on('unhandledRejection', (err) => {
-  console.log(`😈 unahandledRejection is detected , shutting down ...`, err);
+  console.log(`😈 Unhandled Rejection detected, shutting down...`, err);
   if (server) {
     server.close(() => {
       process.exit(1);
@@ -30,6 +33,6 @@ process.on('unhandledRejection', (err) => {
 });
 
 process.on('uncaughtException', () => {
-  console.log(`😈 uncaughtException is detected , shutting down ...`);
+  console.log(`😈 Uncaught Exception detected, shutting down...`);
   process.exit(1);
 });

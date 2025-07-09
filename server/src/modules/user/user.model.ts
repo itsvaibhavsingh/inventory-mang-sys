@@ -7,7 +7,7 @@ const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, select: 0 },
+    password: { type: String, required: true, select: false }, // ✅ fix here
     title: { type: String },
     description: { type: String },
     avatar: { type: String },
@@ -25,6 +25,7 @@ const userSchema = new Schema<IUser>(
   { timestamps: true }
 );
 
+// 🔐 Hash the password before saving
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await hashPassword(this.password);
