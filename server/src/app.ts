@@ -10,12 +10,15 @@ const app: Application = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
+// ✅ Correctly configure CORS
 app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://inventory-managment-system-omega.vercel.app'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // application routes
